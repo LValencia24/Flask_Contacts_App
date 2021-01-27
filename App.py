@@ -39,6 +39,7 @@ def get_contact(id):
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM contacts WHERE id = %s', (id))
     data = cur.fetchall()
+    print(data)
     return render_template('edit-contact.html', contact = data[0])
 
 @app.route('/update/<id>', methods = ['POST'])
@@ -67,6 +68,29 @@ def delete_contact(id):
     flash('Contact Removed Successfully')
     return redirect(url_for('Index'))
 
+# Prueba adicional
+
+@app.route('/vista_update/')
+def vista_del_update():
+    return render_template('update-contact.html')
+
+@app.route('/update-contact/', methods = ['POST'])
+def update_contact_2():
+    if request.method == 'POST':
+        id1 = request.form['id']
+        email = request.form['email']
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            UPDATE contacts
+            SET email = %s
+            WHERE id = %s
+        """, (email, id1))
+        mysql.connection.commit()
+        flash('Contact Updated Successfully')
+        return redirect(url_for('Index'))
+
+# Fin de la prueba adicional
+
 if __name__ == '__main__':
-    app.run(port = 3000, debug = True)
+    app.run(port = 3333, debug = True)
 
